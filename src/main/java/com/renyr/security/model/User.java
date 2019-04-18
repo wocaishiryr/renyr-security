@@ -16,4 +16,7 @@ public class User {
 
     public User(String username, String s, List<GrantedAuthority> authorities) {
     }
+
+    public User(String username, String s, String authorities) {
+    }
 }

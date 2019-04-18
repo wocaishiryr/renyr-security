@@ -2,7 +2,6 @@ package com.renyr.security.security;
 
 import com.renyr.security.security.jwt.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,13 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private AuthSuccessHandler authSuccessHandler;
-
-    @Autowired
-    private AuthFailHandler authFailHandler;
-
-
-    @Autowired
     private AuthAccessDeniedHandler authAccessDeniedHandler;
 
     @Override
@@ -38,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
-    public static final String [] permitUrls={
+    public static final String [] PERMIT_GET_URLS={
             "/v2/api-docs",
             "/configuration/ui",
             "/swagger-resources",
@@ -49,15 +41,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-resources/configuration/security",
             "/Authorization/login",
             "/"};
+    static final String [] PERMIT_POST_URLS={
+            "/Authorization/login"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry=http.authorizeRequests();
-        for (String u : permitUrls) {
-            registry.antMatchers(u).permitAll();
-        }
 
-//        registry.antMatchers(HttpMethod.POST,"/Authorization/login").permitAll();
+        permitUrl(registry);
 
         registry.and()
                 .logout()
@@ -78,4 +69,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //添加JWT过滤器 除/login其它请求都需经过此过滤器
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()));
     }
+
+    private void permitUrl(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
+        permitGETUrl(registry);
+        permitPOSTUrl(registry);
+    }
+
+    private void permitGETUrl(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
+        for (String permitUrl : PERMIT_GET_URLS) {
+            registry.antMatchers(HttpMethod.GET,permitUrl).permitAll();
+        }
+    }
+
+    private void permitPOSTUrl(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
+        for (String permitUrl : PERMIT_POST_URLS) {
+            registry.antMatchers(HttpMethod.POST,permitUrl).permitAll();
+        }
+    }
+
 }

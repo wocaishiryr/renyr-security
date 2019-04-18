@@ -13,6 +13,8 @@ public class AuthAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+
+
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "权限不足！");
     }
 }
