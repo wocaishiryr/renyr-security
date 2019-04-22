@@ -76,15 +76,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void permitGETUrl(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
-        for (String permitUrl : PERMIT_GET_URLS) {
-            registry.antMatchers(HttpMethod.GET,permitUrl).permitAll();
-        }
+        registry.antMatchers(HttpMethod.GET,PERMIT_GET_URLS).permitAll();
     }
 
     private void permitPOSTUrl(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
-        for (String permitUrl : PERMIT_POST_URLS) {
-            registry.antMatchers(HttpMethod.POST,permitUrl).permitAll();
-        }
+        registry.antMatchers(HttpMethod.POST,PERMIT_POST_URLS).permitAll();
     }
 
 }

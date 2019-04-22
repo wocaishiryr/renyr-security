@@ -134,7 +134,6 @@ public class JwtTokenUtil implements Serializable {
      *
      * @param jwt
      * @return
-     * @throws Exception
      */
     private static Claims parseJWT(String jwt) {
         SecretKey key = new JwtTokenUtil().generalKey();  //签名秘钥，和生成的签名的秘钥一模一样
